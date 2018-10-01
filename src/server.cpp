@@ -13,11 +13,20 @@ void ParseHostName(const std::string &s)
 {
     size_t pos = s.find(':');
 
-    if (pos != std::string::npos)
-    {
-        s_rhost = s.substr(0, pos);
-        s_rserv = s.substr(pos+1);
-    }
+    assert(pos != std::string::npos);
+
+    DLOG("%ld", pos);
+
+    s_rhost = s.substr(0, pos);
+
+    if (s_rhost.empty())
+        s_rhost = "localhost";
+
+    s_rserv = s.substr(pos+1);
+
+    assert(!s_rserv.empty());
+
+    DLOG("%s:%s", s_rhost.c_str(), s_rserv.c_str());
 }
 
 void PrintUsage()
