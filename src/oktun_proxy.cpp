@@ -427,8 +427,7 @@ void ProxyServer::ClientWriteCB(int, short, void *userdata)
 
         if (rc < 0)
         {
-            if (errno == ENOBUFS ||
-                errno == EWOULDBLOCK ||
+            if (errno == EWOULDBLOCK ||
                 errno == EAGAIN)
             {
                 break;

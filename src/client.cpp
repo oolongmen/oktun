@@ -10,7 +10,7 @@
 static std::string s_port  = "51024";
 static std::string s_rhost = "localhost";
 static std::string s_rserv = "51024";
-static std::string s_proxy_port = "8080";
+static std::string s_listen_port = "8080";
 
 void ParseHostName(const std::string &s)
 {
@@ -41,7 +41,7 @@ void PrintUsage()
         "  -h, --help                     Print this help.\n"
         "  -b, --bind [int]               Local port to bind.\n"
         "  -s, --serveraddr [host:port]   Address of oktun server.\n"
-        "  -r, --proxyport [int]          Local port to listen for proxy request\n"
+        "  -l, --listenport [int]         Local port to listen for proxy request\n"
         "\n"
     );
 }
@@ -53,14 +53,14 @@ int main(int argc, char *argv[])
     {
         { "bind", required_argument, 0, 'b' },
         { "serveraddr", required_argument, 0, 's' },
-        { "proxyport", required_argument, 0, 's' },
+        { "listenport", required_argument, 0, 'l' },
         { "help", no_argument, 0, 'h' },
         { 0, 0, 0, 0 }
     };
 
     while ((opt = getopt_long(argc,
                               argv,
-                              "hb:r:s:",
+                              "hb:l:s:",
                               long_options,
                               NULL)) != -1)
     {
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
                 s_port = optarg;
                 break;
 
-            case 'r':
-                s_proxy_port = optarg;
+            case 'l':
+                s_listen_port = optarg;
                 break;
 
             case 's':
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     }
 
     // bind to port
-    if (proxy.BindListen(s_proxy_port) < 0)
+    if (proxy.BindListen(s_listen_port) < 0)
     {
         DLOG("Proxy server bind failed");
         return -1;

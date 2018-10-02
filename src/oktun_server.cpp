@@ -404,7 +404,7 @@ void TunnelServer::ReadCB(int, short, void *userdata)
         return;
     }
 
-    // Utils::HexDump(b.Head(), b.Used());
+    // Utils::HexDump(tmp, rc);
     d->Process(tmp, rc, (struct sockaddr *) &addr, addrlen);
     return;
 }
@@ -541,12 +541,18 @@ void TunnelServer::Client::TaskReadCB(int, short, void *userdata)
     auto *task = static_cast<Task*>(userdata);
 
     if (!task)
+    {
+        DLOG("bad id");
         return;
+    }
 
     auto &b = task->buf[0];
 
     if (b.Full())
+    {
+        DLOG("buffer full");
         return;
+    }
 
     ssize_t rc = 0;
 
@@ -554,6 +560,8 @@ void TunnelServer::Client::TaskReadCB(int, short, void *userdata)
               b.Tail(),
               b.Unused(),
               0);
+
+    DLOG("%ld", rc);
 
     if (rc < 0)
     {
@@ -594,7 +602,7 @@ void TunnelServer::Client::TaskReadCB(int, short, void *userdata)
     }
 
     b.Commit(rc);
-    // Utils::HexDump(b.Head(), rc);
+    Utils::HexDump(b.Head(), rc);
     
     while (!b.Empty())
     {
